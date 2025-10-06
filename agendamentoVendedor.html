@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redditus</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  padding: 20px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.header img {
+width: 3rem;
+height: 3rem;
+  cursor: pointer;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+input{
+  outline: none;
+}
+button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+.header span{
+  font-size: 2rem;
+  font-weight: 900;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+ <a href="agendamentoVendedor.html"> <img src="voltar.png" alt="voltar.png" >
+ </a>
+  <span>Agendamento</span>
+</div>
+
+<h3>Detalhes do agendamento</h3>
+
+<label for="date">Data</label>
+<input type="date" id="date">
+
+<label for="hora">Hora</label>
+<input type="time" id="hora">
+
+<label for="endereco">Local</label>
+<input type="text" id="endereco" placeholder="Digite o endereço">
+
+<label for="clienteSelect">Cliente</label>
+<select id="clienteSelect">
+  <option value="">Selecione um cliente</option>
+</select>
+
+<label for="servico">Serviço</label>
+<input type="text" id="servico" placeholder="Serviço....">
+
+<h3>Ações</h3>
+<button id="continua">Continuar</button>
+<a href="verAgenda.html">
+<button id="cancelar" type="button">Cancelar</button>
+
+</a>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, set, onValue, push } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Config Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDsP7lNqu-tDpJxpsyv8t1DW0M_u2EAE3o",
+  authDomain: "bartolomeu-cruz.firebaseapp.com",
+  databaseURL: "https://bartolomeu-cruz-default-rtdb.firebaseio.com",
+  projectId: "bartolomeu-cruz",
+  storageBucket: "bartolomeu-cruz.appspot.com",
+  messagingSenderId: "408863884951",
+  appId: "1:408863884951:web:13e8c2282139c1307dcbd2"
+};
+
+// Inicializa Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// Elementos HTML
+const clienteSelect = document.getElementById("clienteSelect");
+const btnContinuar = document.getElementById("continua");
+const dateInput = document.getElementById("date");
+const horaInput = document.getElementById("hora");
+const enderecoInput = document.getElementById("endereco");
+const servicoInput = document.getElementById("servico");
+
+// Preenche select de clientes
+const clientesRef = ref(db, "usuarios/clientes");
+onValue(clientesRef, (snapshot) => {
+  clienteSelect.innerHTML = '<option value="">Selecione um cliente</option>';
+  const clientes = snapshot.val();
+  if (clientes) {
+    Object.entries(clientes).forEach(([uid, cliente]) => {
+      const option = document.createElement("option");
+      option.value = uid;
+      option.textContent = cliente.nome;
+      clienteSelect.appendChild(option);
+    });
+  }
+});
+
+// Salvar agendamento
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    alert("Você precisa estar logado para agendar!");
+    window.location.href = "login.html";
+    return;
+  }
+
+  btnContinuar.addEventListener("click", async () => {
+    const clienteId = clienteSelect.value;
+    const data = dateInput.value;
+    const hora = horaInput.value;
+    const endereco = enderecoInput.value.trim();
+    const servico = servicoInput.value.trim();
+
+    if (!clienteId || !data || !hora || !endereco || !servico) {
+      alert("Preencha todos os campos!");
+      return;
+    }
+
+    try {
+      // Cria referência única para o agendamento
+      const agendamentoRef = push(ref(db, `vendedores/${user.uid}/agendamentos`));
+      await set(agendamentoRef, {
+        clienteId,
+        data,
+        hora,
+        endereco,
+        servico,
+        status: "pendente",
+        criadoEm: Date.now()
+      });
+
+      alert("Agendamento criado com sucesso!");
+      dateInput.value = "";
+      horaInput.value = "";
+      enderecoInput.value = "";
+      servicoInput.value = "";
+      clienteSelect.value = "";
+    } catch (error) {
+      alert("Erro ao criar agendamento: " + error.message);
+    }
+  });
+});
+</script>
+</body>
+</html>

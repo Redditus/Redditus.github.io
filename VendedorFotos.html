@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Redditus</title>
+  <link rel="stylesheet" href="sing.css">
+  <style>
+    #fileInput {
+      display: none; /* esconde o input original */
+    }
+
+    #preview {
+      width: 150px;
+      height: 150px;
+      border-radius: 0%;
+      object-fit: cover;
+      
+      border: 2px solid #ccc;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  
+  
+  <form>
+  <center>
+    <div class="header">
+      <img src="voltar.png" alt="voltar.png" id="voltar" onclick="volar()">
+      <span>Cadastro</span>
+      
+    </div>
+  </center>
+  <center>
+    <br /><br />
+<input type="file" id="fileInput" accept="image/*">
+
+  <!-- Imagem que funciona como botão -->
+  <h3>Adionar foto de documento</h3>
+  <label for="fileInput">
+    <img id="preview" src="camera.png" alt="Clique para enviar imagem">
+  </label>
+
+<br /><br />
+
+
+
+
+<button>concluir a cadastro</button>
+
+</form>
+  
+  
+  
+  
+  
+  <script type="module" src="mais.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

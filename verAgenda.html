@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redditus</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  margin: 0;
+  padding: 0;
+}
+.header {
+  background: none;
+  color: black;
+  
+  text-align: center;
+  padding: 14px;
+  font-size: 2rem;
+  font-weight: 900;
+}
+.container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 0 16px;
+}
+h2 {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 6px;
+}
+.card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.card img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+.info h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #222;
+}
+.info p {
+  margin: 4px 0;
+  color: #555;
+  font-size: 0.92rem;
+}
+.empty {
+  padding: 24px;
+  text-align: center;
+  color: #666;
+}
+#agenda{
+  padding: 6px;
+  top: 80vh;
+  right: 0rem;
+  position: fixed;
+  right: rem;
+  border: none;
+  background: #9D9EA4;
+  border-radius: 10px;
+  color: white;
+}
+#menu{
+  top: 80vh;
+  position: fixed;
+  left: 0rem;
+  padding: 24px;
+  display: flex;
+  background: rgb(241, 242, 246);
+border: 1px solid none;
+width: 100%;
+  justify-content: space-between;
+}
+#menu img{
+  width: 2rem;
+  height: 2rem;
+  margin-right: 2rem;
+  
+}
+</style>
+</head>
+<body>
+<div class="header">Meus Agendamentos</div>
+<div class="container">
+  <h2>Agendamentos Pendentes</h2>
+  <div id="listaPendentes" class="lista">
+    <p class="empty">Carregando agendamentos...</p>
+  </div>
+
+  <h2>Agendamentos Expirados</h2>
+  <div id="listaExpirados" class="lista">
+    <p class="empty">Carregando agendamentos...</p>
+  </div>
+</div>
+<a href="agendamentoVendedor.html">
+<button id="agenda">+ Novo agendamento</button>
+</a>
+
+<div id="menu">
+  <a href="postsVendedores.html">
+  <img src="home.png" alt="home" />
+  </a>
+  
+  <a href="verAgenda.html">
+  <img src="agenda.png" alt="agenda" />
+  </a>
+  
+  <a href="">
+  <img src="chat.png" alt="chat" />
+  </a>
+  <a href="perfilVendedor.html">
+  <img src="perfil.png" alt="perfil" />
+  </a>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Configuração Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDsP7lNqu-tDpJxpsyv8t1DW0M_u2EAE3o",
+  authDomain: "bartolomeu-cruz.firebaseapp.com",
+  databaseURL: "https://bartolomeu-cruz-default-rtdb.firebaseio.com",
+  projectId: "bartolomeu-cruz",
+  storageBucket: "bartolomeu-cruz.appspot.com",
+  messagingSenderId: "408863884951",
+  appId: "1:408863884951:web:13e8c2282139c1307dcbd2"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const listaPendentes = document.getElementById("listaPendentes");
+const listaExpirados = document.getElementById("listaExpirados");
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    listaPendentes.innerHTML = "<p class='empty'>Precisa estar logado como vendedor.</p>";
+    listaExpirados.innerHTML = "<p class='empty'>Precisa estar logado como vendedor.</p>";
+    return;
+  }
+
+  const vendedorUid = user.uid;
+  const agendRef = ref(db, `vendedores/${vendedorUid}/agendamentos`);
+
+  onValue(agendRef, async (snapshot) => {
+    listaPendentes.innerHTML = "";
+    listaExpirados.innerHTML = "";
+
+    if (!snapshot.exists()) {
+      listaPendentes.innerHTML = "<p class='empty'>Nenhum agendamento encontrado.</p>";
+      listaExpirados.innerHTML = "<p class='empty'>Nenhum agendamento expirado.</p>";
+      return;
+    }
+
+    const dbRef = ref(db);
+    const tarefas = [];
+
+    snapshot.forEach((childSnap) => {
+      const agendamento = childSnap.val();
+
+      const tarefa = (async () => {
+        // Buscar dados do cliente
+        let clienteNome = "Cliente desconhecido";
+        let clienteFoto = "camera.png";
+
+        if (agendamento.clienteId) {
+          try {
+            const clienteSnap = await get(child(dbRef, `usuarios/clientes/${agendamento.clienteId}`));
+            if (clienteSnap.exists()) {
+              const c = clienteSnap.val();
+              clienteNome = c.nome || clienteNome;
+              clienteFoto = c.foto || c.fotoPerfil || clienteFoto;
+            }
+          } catch (err) {
+            console.error("Erro ao buscar cliente:", err);
+          }
+        }
+
+        // Data e hora do agendamento
+        const agendamentoDate = new Date(`${agendamento.data}T${agendamento.hora}`);
+        const agora = new Date();
+
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <img src="${clienteFoto}" alt="${clienteNome}">
+          <div class="info">
+            <h3>${clienteNome}</h3>
+            <p><strong>Serviço:</strong> ${agendamento.servico || "—"}</p>
+            <p><strong>Data:</strong> ${agendamento.data || "—"}</p>
+            <p><strong>Hora:</strong> ${agendamento.hora || "—"}</p>
+            <p><strong>Endereço:</strong> ${agendamento.endereco || "—"}</p>
+          </div>
+        `;
+
+        // Classifica em pendente ou expirado
+        if (agendamentoDate >= agora) {
+          listaPendentes.appendChild(card);
+        } else {
+          listaExpirados.appendChild(card);
+        }
+      })();
+
+      tarefas.push(tarefa);
+    });
+
+    await Promise.all(tarefas);
+
+    if (!listaPendentes.hasChildNodes()) {
+      listaPendentes.innerHTML = "<p class='empty'>Nenhum agendamento pendente.</p>";
+    }
+    if (!listaExpirados.hasChildNodes()) {
+      listaExpirados.innerHTML = "<p class='empty'>Nenhum agendamento expirado.</p>";
+    }
+  });
+});
+</script>
+</body>
+</html>

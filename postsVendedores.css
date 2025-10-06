@@ -1,0 +1,125 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f5f5f5;
+  
+}
+
+/* Botão adicionar post */
+#btnAdicionarPost {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+#btnAdicionarPost:hover {
+  background-color: #0056b3;
+}
+
+/* Container de posts com grid responsivo */
+#postsContainer {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* Card do post */
+.post {
+  background: none;
+  padding: 15px;
+  border-radius: 10px;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin-bottom: 3rem;
+}
+
+/* Imagem do produto */
+.post img {
+  width: 100%;
+  height: auto;
+  max-height: 250px;
+  object-fit: contain;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+
+/* Detalhes do produto */
+.post-details {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.post-details h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+}
+
+.post-details p {
+  margin: 5px 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.post-details span {
+  font-weight: bold;
+  color: red;
+  margin-top: 5px;
+}
+
+/* Responsividade: telas menores */
+@media (max-width: 600px) {
+  #postsContainer {
+    grid-template-columns: 1fr;
+  }
+  
+  .post-details h3 {
+    font-size: 1rem;
+  }
+  
+  .post-details p {
+    font-size: 0.9rem;
+    color: lightblue;
+  }
+}
+header{
+  font-size: 2rem;
+  font-weight: 900;
+}
+#btnAdicionarPost{
+  top: 60vh;
+  position: fixed;
+  right: 1.5rem;
+}
+#menu{
+  top: 80vh;
+  position: fixed;
+  left: 0rem;
+  padding: 24px;
+  display: flex;
+  background: rgb(241, 242, 246);
+border: 1px solid none;
+width: 100%;
+  justify-content: space-between;
+}
+#menu img{
+  width: 2rem;
+  height: 2rem;
+  margin-right: 2rem;
+  
+}
+
+#postsContainer{
+  overflow-y: scroll;
+  height: 60vh;
+  
+
+}

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redditus</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f2f5;
+    margin: 0;
+    padding: 20px;
+  }
+#menu {
+  top: 80vh;
+  position: fixed;
+  left: 0rem;
+  padding: 24px;
+  display: flex;
+  background: rgb(241, 242, 246);
+  border: 1px solid none;
+  width: 100%;
+  justify-content: space-between;
+}
+
+#menu img {
+  width: 2rem;
+  height: 2rem;
+  margin-right: 2rem;
+  
+}
+  .perfil-container {
+    max-width: 700px;
+    margin: 40px auto;
+    background: ;
+    border-radius: 15px;
+    
+    padding: 20px 30px;
+  }
+
+  .perfil-top {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .perfil-foto {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #007bff;
+    background: #f0f0f0;
+  }
+
+  .perfil-nome-classificacao {
+    flex: 1;
+  }
+
+  .perfil-nome-classificacao h2 {
+    margin: 0;
+    font-size: 1.8rem;
+    color: #333;
+  }
+
+  .estrelas {
+    margin-top: 5px;
+    font-size: 1.2rem;
+    color: #FFD700;
+  }
+
+  .perfil-info {
+    margin-top: 20px;
+  }
+
+  .perfil-info p {
+    margin: 8px 0;
+    color: #555;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .perfil-top {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .perfil-nome-classificacao h2 {
+      font-size: 1.5rem;
+    }
+
+    .perfil-info p {
+      font-size: 0.95rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="perfil-container">
+  <div class="perfil-top">
+    <img id="fotoPerfil" class="perfil-foto" src="camera.png" alt="Foto de perfil">
+    <div class="perfil-nome-classificacao">
+      <h2 id="nomeVendedor">Nome do Vendedor</h2>
+      <div class="estrelas" id="classificacaoPerfil">☆☆☆☆☆</div>
+    </div>
+  </div>
+
+  <div class="perfil-info">
+    <p><strong>Email:</strong> <span id="emailVendedor"></span></p>
+    <p><strong>Telefone:</strong> <span id="telefoneVendedor"></span></p>
+  </div>
+</div>
+<div id="menu">
+  <a href="postsVendedores.html">
+  <img src="home.png" alt="home" />
+  </a>
+  
+  <a href="verAgenda.html">
+  <img src="agenda.png" alt="agenda" />
+  </a>
+  
+  <a href="">
+  <img src="chat.png" alt="chat" />
+  </a>
+  <a href="perfilVendedor.html">
+  <img src="perfil.png" alt="perfil" />
+  </a>
+</div>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Config Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDsP7lNqu-tDpJxpsyv8t1DW0M_u2EAE3o",
+  authDomain: "bartolomeu-cruz.firebaseapp.com",
+  databaseURL: "https://bartolomeu-cruz-default-rtdb.firebaseio.com",
+  projectId: "bartolomeu-cruz",
+  storageBucket: "bartolomeu-cruz.appspot.com",
+  messagingSenderId: "408863884951",
+  appId: "1:408863884951:web:13e8c2282139c1307dcbd2"
+};
+
+// Inicializa Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+// Elementos HTML
+const fotoPerfil = document.getElementById("fotoPerfil");
+const nomeVendedor = document.getElementById("nomeVendedor");
+const emailVendedor = document.getElementById("emailVendedor");
+const telefoneVendedor = document.getElementById("telefoneVendedor");
+const classificacaoPerfil = document.getElementById("classificacaoPerfil");
+
+// Função para mostrar estrelas
+function mostrarEstrelas(nota) {
+  const totalEstrelas = 5;
+  let estrelas = "";
+  for (let i = 1; i <= totalEstrelas; i++) {
+    estrelas += (i <= Math.floor(nota)) ? "★" : "☆";
+  }
+  if (nota % 1 >= 0.5) {
+    estrelas = estrelas.split("");
+    estrelas[Math.floor(nota)] = "⯪"; // meia estrela opcional
+    estrelas = estrelas.join("");
+  }
+  return estrelas;
+}
+
+// Puxa dados do Firebase
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid;
+    const vendedorRef = ref(db, `vendedores/${uid}`);
+
+    onValue(vendedorRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        nomeVendedor.textContent = data.nome || "";
+        emailVendedor.textContent = data.email || "";
+        telefoneVendedor.textContent = data.telefone || "";
+        fotoPerfil.src = data.documentoPerfil || "camera.png";
+
+        const nota = data.classificacao || 0;
+        classificacaoPerfil.textContent = mostrarEstrelas(nota);
+      }
+    });
+  } else {
+    alert("Você precisa estar logado para ver o perfil!");
+    window.location.href = "login.html";
+  }
+});
+</script>
+
+</body>
+</html>

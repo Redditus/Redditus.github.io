@@ -1,0 +1,45 @@
+body {
+    font-size: 15pt;
+    margin: 0 0 0 0;
+    padding: 0 0 0 0;
+    background: white;
+    font-family: Arial, Helvetica, sans-serif;
+    
+}
+
+button{
+    width: 80%;
+    height: auto;
+    margin-top: 2rem;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: rgb(229, 238, 245);
+
+    
+    
+}
+#vendedor{
+    width: 80%;
+    height: auto;
+    margin-top: 2rem;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    background: rgb(196, 217, 234);
+
+}
+
+#imagens{
+    width: 14rem;
+    height: 14rem;
+}
+#link{
+    font-size: 14px;
+    
+}
+a{
+    text-decoration: none;
+    color: #C4D9EA;
+}
+

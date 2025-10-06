@@ -1,0 +1,92 @@
+body{
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+background: rgb(241, 242, 246);
+
+}
+.header{
+  width: 100%;
+}
+.header button{
+  background: none;
+  color: #000;
+  font-size: 2rem;
+  outline: none;
+  border: none;
+  
+  
+}
+.header span{
+  margin-left: 5rem;
+  font-size: 1.5rem;
+}
+form{
+  width: 90%;
+  margin-left: 1rem;
+  margin-right: 0.5rem;
+  background: white;
+  margin-top: 8vh;
+  border-radius: 20px;
+  padding: 6px;
+  height: auto;
+}
+#titulo{
+  width: 80%;
+padding: 12px;
+outline: none;
+border: none;
+margin-left: 1rem;
+border-radius: 10px;
+background: rgb(241, 242, 246);
+}
+
+textarea{
+  width: 90%;
+  height: 20vh;
+  margin-left: 0.5rem;
+  border-radius: 10px;
+}
+#preco{
+  margin-left: 1rem;
+  margin-top: 2rem;
+}
+#number{
+  width: 70%;
+padding: 12px;
+outline: none;
+border: none;
+border-radius: 10px;
+background: rgb(241, 242, 246);
+
+}
+
+select{
+  width: 2rem;
+  height: 2rem;
+  background: none;
+  border: none;
+  outline: none;
+}
+#button{
+  width: 90%;
+  padding: 12px;
+ background: rgba(10, 128, 236);
+border: none;
+color: white;
+border-radius: 10px;
+}
+.imagem{
+  border: 1px solid black;
+  padding: 12px;
+}
+.imagem button{
+  border: none;
+  color: black;
+  background: rgb(241, 242, 246);
+padding: 12px;
+  
+}
+a{
+  text-decoration: none;
+  color: black;
+}

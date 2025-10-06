@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ffffff">
+
+  <title>Redditus</title>
+  
+  <!-- HTML -->
+  
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<center>
+  <h3>Entre na comunidade</h3>
+  
+  <br />
+  <button onclick="cliente()">Sou cliente</button>
+  <button id="vendedor" onclick="vendedor()">Sou vendedor</button>
+  <br /><br />
+  <img src="redditus.png" alt="Redditus" id="imagens">
+  <br /><br />
+  <span id="link"><a href="cadastrar.html">você não tem uma conta?
+ <br />
+  cadastre aqui</a></span>
+</center>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("sw.js")
+      .then(() => console.log("Service Worker registrado"))
+      .catch(err => console.error("Erro no Service Worker", err));
+  }
+</script>
+
+<script src="main.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

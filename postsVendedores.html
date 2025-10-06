@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Redditus</title>
+  <link rel="stylesheet" href="postsVendedores.css">
+  <style>
+
+  </style>
+</head>
+<body>
+  <header>
+    <center>
+   <span>Meus Produtos</span>
+    </center>
+  </header>
+<!-- Botão adicionar post -->
+
+
+<div id="postsContainer"></div>
+
+
+<button id="btnAdicionarPost">+</button>
+
+
+<div id="menu">
+  <a href="postsVendedores.html">
+  <img src="home.png" alt="home" />
+  </a>
+  
+  <a href="verAgenda.html">
+  <img src="agenda.png" alt="agenda" />
+  </a>
+  
+  <a href="">
+  <img src="chat.png" alt="chat" />
+  </a>
+  <a href="perfilVendedor.html">
+  <img src="perfil.png" alt="perfil" />
+  </a>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Config Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDsP7lNqu-tDpJxpsyv8t1DW0M_u2EAE3o",
+  authDomain: "bartolomeu-cruz.firebaseapp.com",
+  databaseURL: "https://bartolomeu-cruz-default-rtdb.firebaseio.com",
+  projectId: "bartolomeu-cruz",
+  storageBucket: "bartolomeu-cruz.appspot.com",
+  messagingSenderId: "408863884951",
+  appId: "1:408863884951:web:13e8c2282139c1307dcbd2"
+};
+
+// Inicializa Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const postsContainer = document.getElementById("postsContainer");
+const btnAdicionarPost = document.getElementById("btnAdicionarPost");
+
+// Redireciona para página de cadastro de post
+btnAdicionarPost.addEventListener("click", () => {
+  window.location.href = "addicionarPots.html"; // coloque o nome correto do seu arquivo de formulário
+});
+
+// Aguarda usuário logado
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    const uid = user.uid;
+    const postsRef = ref(db, `vendedores/${uid}/posts`);
+
+    onValue(postsRef, (snapshot) => {
+      postsContainer.innerHTML = ""; // limpa antes de listar
+
+      const posts = snapshot.val();
+      if (posts) {
+        Object.values(posts).forEach(post => {
+          const postDiv = document.createElement("div");
+          postDiv.className = "post";
+
+          const img = document.createElement("img");
+          img.src = post.imagem || "";
+          postDiv.appendChild(img);
+
+          const details = document.createElement("div");
+          details.className = "post-details";
+
+          const titulo = document.createElement("h3");
+          titulo.textContent = post.titulo;
+          details.appendChild(titulo);
+
+          const descricao = document.createElement("p");
+          descricao.textContent = post.descricao;
+          details.appendChild(descricao);
+
+          const preco = document.createElement("span");
+          preco.textContent = `${post.preco} ${post.moeda || ""}`;
+          details.appendChild(preco);
+
+          postDiv.appendChild(details);
+          postsContainer.appendChild(postDiv);
+        });
+      } else {
+        postsContainer.innerHTML = "<p>Você ainda não publicou nenhum post.</p>";
+      }
+    });
+
+  } else {
+    postsContainer.innerHTML = "<p>Você precisa estar logado para ver seus posts.</p>";
+  }
+});
+</script>
+
+</body>
+</html>

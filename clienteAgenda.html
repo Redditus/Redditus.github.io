@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meus Agendamentos</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+  padding: 20px;
+  margin: 0;
+}
+.header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.header img {
+  width: 30px;
+  cursor: pointer;
+}
+h2 {
+  margin-top: 24px;
+  margin-bottom: 12px;
+  font-size: 1.2rem;
+  color: #333;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 6px;
+}
+.card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.08);
+}
+.card img {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+.info h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #222;
+}
+.info p {
+  margin: 4px 0;
+  color: #555;
+  font-size: 0.92rem;
+}
+.empty {
+  padding: 24px;
+  text-align: center;
+  color: #666;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="voltar.png" alt="voltar.png" onclick="volar()">
+  <span>Meus Agendamentos</span>
+</div>
+
+<h2>Agendamentos Ativos</h2>
+<div id="ativos"><p class="empty">Carregando...</p></div>
+
+<h2>Agendamentos Expirados</h2>
+<div id="expirados"><p class="empty">Carregando...</p></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDsP7lNqu-tDpJxpsyv8t1DW0M_u2EAE3o",
+  authDomain: "bartolomeu-cruz.firebaseapp.com",
+  databaseURL: "https://bartolomeu-cruz-default-rtdb.firebaseio.com",
+  projectId: "bartolomeu-cruz",
+  storageBucket: "bartolomeu-cruz.appspot.com",
+  messagingSenderId: "408863884951",
+  appId: "1:408863884951:web:13e8c2282139c1307dcbd2"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+const ativosDiv = document.getElementById("ativos");
+const expiradosDiv = document.getElementById("expirados");
+
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    alert("Faça login para ver seus agendamentos!");
+    window.location.href = "login.html";
+    return;
+  }
+  
+  const clienteUid = user.uid;
+  carregarAgendamentos(clienteUid);
+});
+
+function carregarAgendamentos(clienteUid) {
+  const vendedoresRef = ref(db, "vendedores");
+
+  onValue(vendedoresRef, (snapshot) => {
+    const vendedores = snapshot.val();
+    ativosDiv.innerHTML = '';
+    expiradosDiv.innerHTML = '';
+
+    if (!vendedores) {
+      ativosDiv.innerHTML = '<p class="empty">Nenhum agendamento encontrado.</p>';
+      expiradosDiv.innerHTML = '<p class="empty">Nenhum agendamento expirado.</p>';
+      return;
+    }
+
+    let temAtivos = false;
+    let temExpirados = false;
+
+    const agora = new Date();
+
+    for (const [vendedorId, vendedorData] of Object.entries(vendedores)) {
+      const agendamentos = vendedorData.agendamentos || {};
+      for (const [agendamentoId, agendamento] of Object.entries(agendamentos)) {
+        if (agendamento.clienteId !== clienteUid) continue;
+
+        const dataHoraAgendamento = new Date(`${agendamento.data}T${agendamento.hora}`);
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const img = document.createElement("img");
+        img.src = vendedorData.documentoPerfil || "camera.png";
+
+        const info = document.createElement("div");
+        info.className = "info";
+
+        const servico = document.createElement("h3");
+        servico.textContent = agendamento.servico || "Serviço";
+
+        const vendedorNome = document.createElement("p");
+        vendedorNome.textContent = `Vendedor: ${vendedorData.nome || "Anônimo"}`;
+
+        const endereco = document.createElement("p");
+        endereco.textContent = `Local: ${agendamento.endereco || "Não informado"}`;
+
+        const dataHora = document.createElement("p");
+        dataHora.textContent = `Data/Hora: ${agendamento.data} ${agendamento.hora}`;
+
+        info.appendChild(servico);
+        info.appendChild(vendedorNome);
+        info.appendChild(endereco);
+        info.appendChild(dataHora);
+
+        card.appendChild(img);
+        card.appendChild(info);
+
+        if (dataHoraAgendamento >= agora) {
+          ativosDiv.appendChild(card);
+          temAtivos = true;
+        } else {
+          expiradosDiv.appendChild(card);
+          temExpirados = true;
+        }
+      }
+    }
+
+    if (!temAtivos) ativosDiv.innerHTML = '<p class="empty">Nenhum agendamento ativo.</p>';
+    if (!temExpirados) expiradosDiv.innerHTML = '<p class="empty">Nenhum agendamento expirado.</p>';
+  });
+}
+</script>
+</body>
+</html>

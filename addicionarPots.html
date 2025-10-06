@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="addicionarPots.html">
+  <title>Redditus</title>
+  <link rel="stylesheet" href="addicionarPots.css">
+</head>
+<body>
+  <form>
+  <div class="header">
+    <button>
+  <a href="postsVendedores.html">  x 
+  </a>
+  </button>
+    <span>Novo anúncio</span>
+  
+  </div>
+  
+<br /><br />
+ <input type="text" placeholder="Título" id="titulo">
+ <br><br />
+ 
+ <textarea placeholder="Descrição" id="descricao" >
+   
+ </textarea>
+ 
+ 
+ <h1>Mídia</h1>
+ 
+ <br /><br />
+ 
+<div class="imagem">
+  <center>
+    <span><b>Adicionar foto</b></span>
+    <p>Adicione fotos para tornar seu produto mais interativo</p>
+    
+    <!-- Input file escondido -->
+    <input type="file" id="imagem" accept="image/*" style="display:none">
+    
+    <!-- Botão que abre o input -->
+    <button type="button" id="btnAdicionarFoto">Adicionar foto</button>
+    
+    <!-- Preview da imagem -->
+    <img id="previewImagem" src="" alt="Preview" style="display:none; width:150px; height:150px; object-fit:cover; margin-top:10px; border:2px solid #ccc;">
+  <br /><br />
+  
+  </center>
+</div>
+
+   
+   <div id="preco">
+     <input type="number" id="number">
+     
+<select name="" id="moedas">
+  <option value="$">$</option>
+  <option value="USA">USA</option>
+  <option value="kz">AOA</option>
+  <option value="R$">R$</option>
+  <!-- adicione outras moedas se quiser -->
+</select>
+
+     
+     
+   </div>
+   
+     <br /><br />
+     <center>
+       
+       
+       
+     <button id="button">Publicar</button>
+     </center>
+     <br />
+     </form>
+
+   </div>
+ </div>
+</form>
+     <br />
+     <script type="module" src="adicionarPots.js"></script>
+
+</body>
+</html>

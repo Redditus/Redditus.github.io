@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="sing.css">
+  <title>Redditus</title>
+  <style>
+
+
+  </style>
+</head>
+<body>
+
+<form>
+  <center>
+<div class="header">
+      <img src="voltar.png" alt="voltar.png" id="voltar" onclick="volar()">
+    <span>Cadastro</span>
+    
+</div>
+  </center>
+
+<br />
+<label>Nome completo</label>
+<br />
+<br />
+
+
+<input type="text" id="nome" placeholder="digite o seu nome completo aqui">
+<br /><br />
+
+<label for="endereco">Endereço</label>
+<br />
+<input type="text" id="endereco" name="endereco" placeholder="Insira o seu endereço" />
+<br /><br />
+
+
+
+<label>Email</label>
+<br />
+  <br /><input type="email" id="email" placeholder="insisra o seu e-mail"> 
+  <br />
+  <br />
+  
+  
+  <label>Data de Nascimento</label>
+ <br /> <br /><input type="date" id="dataNascimento">
+  <br /><br />
+  
+  
+  
+  <label>Telemóvel</label>
+  <br />
+  <br />
+<input 
+  type="tel" 
+  id="telefone" 
+  value="+55 " 
+  placeholder="+55 (11) 91234-5678" 
+  required
+>
+
+  <br /><br />
+  
+  
+  
+  <label>Senha</label>
+  <br />
+  <br /><input type="password" id="senha"  placeholder="criei uma senha"></label>
+  
+  <br><br />
+  <label>confirma a senha 
+  <br /><br /><input type="text"     id="confirmaSenha" placeholder="confirme a senha"></label>
+  <center>
+<br>
+<button type="button"  id="Cadastra">Cadastra</button>
+<br />
+<br />
+      <a href="login.html" style="text-decoration: none; color: black;">Login</a>
+<br />
+  </center>
+  <br />
+</form> 
+</center>
+<script src="main.js"></script>
+<script type="module" src="sing.js"></script>
+
+</body>
+</html>

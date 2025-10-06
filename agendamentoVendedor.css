@@ -1,0 +1,75 @@
+body{
+  margin: 0px;
+  padding: 0px;
+}
+  .header{
+  width: 100%;
+background: #F6FAFD;
+width: 100%;
+padding: 5px;
+height: auto;
+
+}
+
+.header span{
+  font-size: 1.78rem;margin-top: 2rem;
+}
+#voltar {
+  width: 3rem;
+  height: 3rem;
+  position: absolute;
+  top: 0rem;
+  left: 0rem;
+  
+ 
+}
+p{
+  font-weight: 900;
+  font-size: 1rem;
+  margin-left: 1rem;
+}
+input{
+margin-left: 1rem;
+padding: 12px;
+width: 80%;
+border: none;
+outline: none;
+border-radius: 10px;
+background-color: #E8ECF5;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+#continua{
+  width: 80%;
+  height: auto;
+  margin-top: 0.5rem;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: rgb(229, 238, 245);
+  
+  
+  
+}
+
+#cancelar{
+  width: 80%;
+  height: auto;
+  margin-top: 0.5rem;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background: rgb(196, 217, 234);
+  
+}

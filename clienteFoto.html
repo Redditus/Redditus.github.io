@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redditus</title>
+<link rel="stylesheet" href="sing.css">
+<style>
+  #fileInput {
+    display: none; /* esconde o input original */
+  }
+
+  #preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    cursor: pointer;
+  }
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+  }
+
+  button:hover {
+    background-color: #0056b3;
+  }
+</style>
+</head>
+<body>
+
+<form id="formUpload">
+  <center>
+    <div class="header">
+      <img src="voltar.png" alt="voltar.png" id="voltar" onclick="volar()">
+      <span>Foto de perfil</span>
+    </div>
+
+    <h3>Adicionar foto de perfil</h3>
+    <input type="file" id="fileInput" accept="image/*">
+    <label for="fileInput">
+      <img id="preview" src="camera.png" alt="Clique para enviar imagem">
+    </label>
+
+    <br><br>
+    <button type="submit">continuar</button>
+  </center>
+</form>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Configuração Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDsP7lNqu-tDpJxpsyv8t1DW0M_u2EAE3o",
+  authDomain: "bartolomeu-cruz.firebaseapp.com",
+  databaseURL: "https://bartolomeu-cruz-default-rtdb.firebaseio.com",
+  projectId: "bartolomeu-cruz",
+  storageBucket: "bartolomeu-cruz.appspot.com",
+  messagingSenderId: "408863884951",
+  appId: "1:408863884951:web:13e8c2282139c1307dcbd2"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const fileInput = document.getElementById("fileInput");
+const preview = document.getElementById("preview");
+const form = document.getElementById("formUpload");
+
+// Pré-visualização da imagem
+fileInput.addEventListener("change", () => {
+  const file = fileInput.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      preview.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  }
+});
+
+// Envia a imagem para o Realtime Database
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const file = fileInput.files[0];
+  if (!file) {
+    alert("Selecione uma imagem antes de continuar!");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    const base64Data = reader.result;
+
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const uid = user.uid;
+
+        try {
+          await update(ref(db, "usuarios/clientes/" + uid), {
+            fotoPerfil: base64Data
+          });
+          alert("Foto armazenada");
+          // opcional: redirecionar ou atualizar página
+        } catch (error) {
+          alert("Erro ao enviar imagem: " + error.message);
+        }
+      } else {
+        alert("Você precisa estar logado para enviar a foto!");
+      }
+    });
+  };
+
+  reader.readAsDataURL(file);
+});
+</script>
+</body>
+</html>

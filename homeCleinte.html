@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Redditus</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+  }
+  h1 { width: 100%; }
+  .post {
+    display: flex;
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    padding: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    gap: 15px;
+    align-items: flex-start;
+  }
+  .post img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #ccc;
+    cursor: pointer;
+  }
+  .post-details {
+    flex: 1;
+  }
+  .post-details h3 { margin: 0 0 5px 0; }
+  .post-details p { margin: 5px 0; color: #555; }
+  .post-details span { font-weight: bold; }
+  .estrelas {
+    font-size: 28px;
+    color: #FFD700;
+    cursor: pointer;
+    user-select: none;
+    margin-top: 8px;
+  }
+  #produtos {
+    font-size: 1.20rem;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  /* Modal full screen */
+  #modalOverlay {
+    display: none;
+    position: fixed;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 999;
+    overflow-y: auto;
+  }
+  #modalContent {
+    background:#fff;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+  }
+  #modalContent img {
+    width: 6rem;
+    height: 6rem;
+    object-fit: cover;
+    border-radius: 50%;
+    border:2px solid #ccc;
+    display:block;
+    margin-bottom: 15px;
+  }
+  #closeModal {
+    position:absolute;
+    top:10px;
+    right:10px;
+    font-size:20px;
+    cursor:pointer;
+  }
+  .vendedorInfo {
+    margin-top: 20px;
+    border-top: 1px solid #ccc;
+    padding-top: 15px;
+  }
+  .associando{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+  #menu{
+  top: 80vh;
+  position: fixed;
+  left: 0rem;
+  padding: 24px;
+  display: flex;
+  background: rgb(241, 242, 246);
+border: 1px solid none;
+width: 100%;
+  justify-content: space-between;
+}
+#menu img{
+  width: 2rem;
+  height: 2rem;
+  margin-right: 2rem;
+  
+}
+</style>
+</head>
+<body>
+<center><span id="produtos">Produtos em Destaque</span></center>
+<div id="postsContainer"><p></p></div>
+
+<!-- Modal full screen -->
+<div id="modalOverlay">
+  <div id="modalContent">
+    <span id="closeModal">✖ Fechar</span>
+    <img id="modalPostImg" src="">
+    <h2 id="modalPostTitulo"></h2>
+    <p id="modalPostDescricao"></p>
+    <span id="modalPostPreco"></span>
+    
+    <div class="vendedorInfo">
+      
+   <div class="associando">
+     
+     
+   <img id="vendedorFoto" src="">
+   <div id="desxx">
+   <p id="vendedorNome"></p>
+<div id="vendedorEstrelas" class="estrelas"></div>
+</div>
+      
+      
+   </div>
+
+      
+
+
+      <p id="vendedorEmail"></p>
+      <p id="vendedorTelefone"></p>
+
+    </div>
+  </div>
+</div>
+<div id="menu">
+  <a href="homeCleinte.html">
+    <img src="home.png" alt="home" />
+  </a>
+  
+  <a href="">
+    <img src="agenda.png" alt="agenda" />
+  </a>
+  
+  <a href="">
+    <img src="chat.png" alt="chat" />
+  </a>
+  <a href="perfilVendedor.html">
+    <img src="perfil.png" alt="perfil" />
+  </a>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyDsP7lNqu-tDpJxpsyv8t1DW0M_u2EAE3o",
+  authDomain: "bartolomeu-cruz.firebaseapp.com",
+  databaseURL: "https://bartolomeu-cruz-default-rtdb.firebaseio.com",
+  projectId: "bartolomeu-cruz",
+  storageBucket: "bartolomeu-cruz.appspot.com",
+  messagingSenderId: "408863884951",
+  appId: "1:408863884951:web:13e8c2282139c1307dcbd2"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+const postsContainer = document.getElementById("postsContainer");
+let clienteUid = null;
+
+// Modal elements
+const modalOverlay = document.getElementById("modalOverlay");
+const modalPostImg = document.getElementById("modalPostImg");
+const modalPostTitulo = document.getElementById("modalPostTitulo");
+const modalPostDescricao = document.getElementById("modalPostDescricao");
+const modalPostPreco = document.getElementById("modalPostPreco");
+const vendedorFoto = document.getElementById("vendedorFoto");
+const vendedorNome = document.getElementById("vendedorNome");
+const vendedorEmail = document.getElementById("vendedorEmail");
+const vendedorTelefone = document.getElementById("vendedorTelefone");
+const vendedorEstrelas = document.getElementById("vendedorEstrelas");
+const closeModal = document.getElementById("closeModal");
+
+function mostrarEstrelas(valor, max=5) {
+  let estrelas = "";
+  for (let i=1; i<=max; i++){
+    estrelas += (i <= valor) ? "★" : "☆";
+  }
+  return estrelas;
+}
+
+onAuthStateChanged(auth, (user) => {
+  if (user) clienteUid = user.uid;
+  carregarPosts();
+});
+
+function carregarPosts() {
+  const vendedoresRef = ref(db,'vendedores');
+  onValue(vendedoresRef, (snapshot) => {
+    postsContainer.innerHTML = '';
+    const vendedores = snapshot.val();
+    if (!vendedores) { postsContainer.innerHTML = '<p>Nenhum post disponível.</p>'; return; }
+
+    for (const [vendedorId, vendedorData] of Object.entries(vendedores)) {
+      if (!vendedorData.posts) continue;
+
+      for (const [postId, post] of Object.entries(vendedorData.posts)) {
+        const postDiv = document.createElement("div");
+        postDiv.className = "post";
+
+        const img = document.createElement("img");
+        img.src = post.imagem || "camera.png";
+        img.addEventListener("click", () => abrirModal(post, vendedorData));
+        postDiv.appendChild(img);
+
+        const details = document.createElement("div");
+        details.className = "post-details";
+
+        const titulo = document.createElement("h3");
+        titulo.textContent = post.titulo || "Sem título";
+        details.appendChild(titulo);
+
+        const descricao = document.createElement("p");
+        descricao.textContent = post.descricao || "Sem descrição";
+        details.appendChild(descricao);
+
+        const preco = document.createElement("span");
+        preco.textContent = post.preco ? `Preço: ${post.preco}` : "";
+        details.appendChild(preco);
+
+        postsContainer.appendChild(postDiv);
+        postDiv.appendChild(details);
+      }
+    }
+  });
+}
+
+function abrirModal(post, vendedorData){
+  modalOverlay.style.display = "block";
+  modalPostImg.src = post.imagem || "camera.png";
+  modalPostTitulo.textContent = post.titulo || "Sem título";
+  modalPostDescricao.textContent = post.descricao || "Sem descrição";
+  modalPostPreco.textContent = post.preco ? `Preço: ${post.preco}` : "";
+
+  // Vendedor info
+  vendedorFoto.src = vendedorData.documentoPerfil || "camera.png"; // foto do vendedor
+  vendedorNome.textContent = `Nome: ${vendedorData.nome || "Anônimo"}`;
+  vendedorEmail.textContent = `Email: ${vendedorData.email || "Não informado"}`;
+  vendedorTelefone.textContent = `Telefone: ${vendedorData.telefone || "Não informado"}`;
+
+  // Média de classificação do vendedor
+  const classificacoes = vendedorData.classificacoes || {};
+  const valores = Object.values(classificacoes);
+  const media = valores.length ? Math.round(valores.reduce((a,b)=>a+b,0)/valores.length) : 0;
+  vendedorEstrelas.textContent = mostrarEstrelas(media);
+}
+
+// Fecha modal
+closeModal.addEventListener("click", () => modalOverlay.style.display = "none");
+modalOverlay.addEventListener("click", e => { if(e.target==modalOverlay) modalOverlay.style.display="none"; });
+
+</script>
+</body>
+</html>
