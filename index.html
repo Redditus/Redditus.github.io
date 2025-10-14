@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Z.E.R.O.</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0d1117">
+</head>
+<body>
+  <header>
+    <h1>Z.E.R.O.</h1>
+    <p>Zealous Efficient Robotic Operator</p>
+  </header>
+
+  <main>
+    <p>Olá, eu sou o Z.E.R.O., seu assistente offline. 🤖</p>
+    <button id="acao">Executar comando</button>
+    <p id="resposta"></p>
+  </main>
+
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+      .then(() => console.log('✅ Service Worker do Z.E.R.O. registrado!'))
+      .catch(err => console.error('Erro ao registrar Service Worker:', err));
+    }
+  </script>
+</body>
+</html>
