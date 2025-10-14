@@ -1,11 +1,13 @@
 {
+  "id": "/zero-pwa",
   "name": "Z.E.R.O. - Zealous Efficient Robotic Operator",
   "short_name": "ZERO",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#0d1117",
   "theme_color": "#0d1117",
-  "description": "Um assistente offline inteligente e eficiente.",
+  "orientation": "portrait",
+  "description": "Z.E.R.O. é um assistente educativo offline, criado para apoiar o aprendizado com rapidez, eficiência e simplicidade.",
   "icons": [
     {
       "src": "icon-192.png",
@@ -16,6 +18,20 @@
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshot1.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "label": "Tela inicial do assistente educativo Z.E.R.O."
+    },
+    {
+      "src": "screenshot2.png",
+      "sizes": "720x1280",
+      "type": "image/png",
+      "label": "Z.E.R.O. ajudando no aprendizado offline"
     }
   ]
 }
