@@ -4,10 +4,8 @@ const resposta = document.getElementById('resposta');
 
 // Lista de mensagens
 const frases = [
-  "Processamento concluído com sucesso!",
-  "Sistema Z.E.R.O. em ação! ⚙️",
-  "Operação executada com eficiência máxima!",
-  "Z.E.R.O. pronto para o próximo comando. 🤖"
+  "osso ajudar em alguma coisa senhor ?",
+  "hoje esta um belo dia lara uma caminhada"
 ];
 
 // Quando clicar no botão...
