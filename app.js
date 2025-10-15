@@ -80,5 +80,5 @@ function mostrarNotificacao(texto) {
 
 // === Agenda as mensagens diárias ===
 agendarNotificacao(6, 0, "Bom dia, senhor! ☀️ Que tenha um ótimo dia!");
-agendarNotificacao(17, 45, "Boa tarde, senhor! 🍽️ Hora de recarregar as energias!");
+agendarNotificacao(17, 50, "Boa tarde, senhor! 🍽️ Hora de recarregar as energias!");
 agendarNotificacao(18, 0, "Boa noite, senhor! 🌙 Desejo-lhe um ótimo descanso!");
